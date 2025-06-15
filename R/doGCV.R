@@ -242,7 +242,7 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       bin_size = bin_size,
       optim_control = optim_control
     )
-    best_cvec <- results[[i]]$cvec
+    best_cvec <- result$cvec
   }
 
   return(list(
