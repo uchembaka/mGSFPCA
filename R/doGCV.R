@@ -43,7 +43,7 @@ run_optimization <- function(p_val, k_val, ini, SiCell, newData, est_pts, basis_
   # Compute GCV
   ncoefs <- p_val * k_val + p_val + 1
   nobs <- nrow(newData)
-  maxPars <- p_val * bin_size + p_val + 1
+  maxPars <- p_val * length(est_pts) + p_val + 1
   gcv_val <- opt_result$value / ((1 - (ncoefs / maxPars))^2)
 
   return(list(
@@ -69,9 +69,18 @@ extract_results <- function(results, indices, GCVkp, cvecCell, basisCell, conver
 
 # Main function
 doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_control, all_kp) {
-  est_pts <- gcvData$est_pts
-  SiCell <- gcvData$SiCell
-  newData <- gcvData$newData
+
+  kp1 <- length(k) == 1 & length(p) == 1
+  if (kp1) {
+    est_pts <- binData$est_pts
+    SiCell <- binData$SiCell
+    newData <- binData$newData
+  } else {
+    est_pts <- gcvData$est_pts
+    SiCell <- gcvData$SiCell
+    newData <- gcvData$newData
+  }
+
 
   # Initialize results list
   results <- vector("list", 0)
@@ -238,7 +247,7 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       SiCell = binData$SiCell,
       newData = binData$newData,
       est_pts = binData$est_pts,
-      basis_type = basis,
+      basis_type = basis_type,
       bin_size = bin_size,
       optim_control = optim_control
     )
