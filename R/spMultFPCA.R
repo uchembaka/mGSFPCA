@@ -159,9 +159,9 @@ spMultFPCA <- function(dataCell,
                      maxit = maxit, optim_tol = optim_tol, optim_trace = optim_trace)
     result2 <- get_xHat(result)
     CkkStr <- list(
-      Cov = result$U %*% result$D %*% t(result$U),
-      U = result$U,
-      D = result$D,
+      Cov = result$Phi %*% diag(result$Lambda) %*% t(result$Phi),
+      U = result$Phi,
+      D = result$Lambda,
       mu = result$mu,
       sig2 = result$sig2,
       pars = result$pars,
