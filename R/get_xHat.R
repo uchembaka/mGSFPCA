@@ -30,7 +30,7 @@
 #' @import fda
 #' @export
 get_xHat <- function(mGSFPCA_obj, eval_pts = NULL) {
-  
+
   if (is.null(eval_pts)) {
     eval_pts <- mGSFPCA_obj$pars$evalGrid
   }
@@ -40,23 +40,23 @@ get_xHat <- function(mGSFPCA_obj, eval_pts = NULL) {
   } else {
     stop("eval_pts outside of observation point range")
   }
-  
+
   k <- mGSFPCA_obj$pars$k
   p <- mGSFPCA_obj$pars$p
   data <- mGSFPCA_obj$pars$binData
   IDs <- unique(data[,1])
   n <- length(IDs)
-  eval_mu <- fda::eval.basis(eval_pts, mGSFPCA_obj$pars$mu_basis) %*% 
+  eval_mu <- fda::eval.basis(eval_pts, mGSFPCA_obj$pars$mu_basis) %*%
     mGSFPCA_obj$pars$mu_fdobj$fd$coefs
-  
+
   eval_U <- as.matrix(eval_mGSFPCA(mGSFPCA_obj, eval_pts))
   est_U <- eval_mGSFPCA(mGSFPCA_obj, mGSFPCA_obj$pars$workGrid)
-  D <- mGSFPCA_obj$D
+  D <- diag(mGSFPCA_obj$Lambda)
   est_Cov <- (est_U %*% D %*% t(est_U)) + mGSFPCA_obj$sig2 * diag(nrow(est_U))
-  
+
   xHat_pace <- matrix(0, nrow = n, ncol = length(eval_pts))
   xi <- matrix(NA, nrow = n, ncol = p)
-  
+
   for (i in 1:n) {
     iind <- which(data[,1] == IDs[i])
     ti <- data[iind,5]
@@ -70,6 +70,6 @@ get_xHat <- function(mGSFPCA_obj, eval_pts = NULL) {
       xi[i,] <- xii
     }
   }
-  
+
   list(xHat = xHat_pace, Xi = xi)
 }
