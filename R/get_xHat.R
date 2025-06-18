@@ -33,13 +33,15 @@ get_xHat <- function(mGSFPCA_obj, eval_pts = NULL) {
 
   if (is.null(eval_pts)) {
     eval_pts <- mGSFPCA_obj$pars$evalGrid
-  }
-  aT <- mGSFPCA_obj$pars$range[1]; bT <- mGSFPCA_obj$pars$range[2]
-  if (all(eval_pts >= aT) && all(eval_pts <= bT)) {
-    eval_pts <- (eval_pts - aT) / (bT - aT)
   } else {
-    stop("eval_pts outside of observation point range")
+    aT <- mGSFPCA_obj$pars$range[1]; bT <- mGSFPCA_obj$pars$range[2]
+    if (all(eval_pts >= aT) && all(eval_pts <= bT)) {
+      eval_pts <- (eval_pts - aT) / (bT - aT)
+    } else {
+      stop("eval_pts outside of observation point range")
+    }
   }
+
 
   k <- mGSFPCA_obj$pars$k
   p <- mGSFPCA_obj$pars$p
@@ -49,7 +51,7 @@ get_xHat <- function(mGSFPCA_obj, eval_pts = NULL) {
   eval_mu <- fda::eval.basis(eval_pts, mGSFPCA_obj$pars$mu_basis) %*%
     mGSFPCA_obj$pars$mu_fdobj$fd$coefs
 
-  eval_U <- as.matrix(eval_mGSFPCA(mGSFPCA_obj, eval_pts))
+  eval_U <- as.matrix(eval_mGSFPCA(mGSFPCA_obj))
   est_U <- eval_mGSFPCA(mGSFPCA_obj, mGSFPCA_obj$pars$workGrid)
   D <- diag(mGSFPCA_obj$Lambda)
   est_Cov <- (est_U %*% D %*% t(est_U)) + mGSFPCA_obj$sig2 * diag(nrow(est_U))
