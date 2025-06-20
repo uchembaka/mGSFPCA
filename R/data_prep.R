@@ -80,7 +80,7 @@ get_est_data <- function (ord_data, est_grid, mu_fit) {
   # Bin data by index
   newData <- do.call(rbind, lapply(IDs, function(id) {
     datai <- est_data[est_data[,1] == id, , drop = FALSE]
-    bin_result <- averageByIndex(datai[,c(3,4)], datai[,5])
+    bin_result <- averageByIndex(datai[,c(3,4), drop = FALSE], datai[,5])
     datai <- datai[bin_result$firstOccurrence, , drop = FALSE]
     datai[,c(3,4)] <- bin_result$Y
     datai
