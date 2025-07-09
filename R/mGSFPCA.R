@@ -48,7 +48,7 @@ NULL
 #' \itemize{
 #' \item \code{p}: Optimal number of principal components.
 #' \item \code{k}: Optimal number of basis functions.
-#' \item \code{GCV_res}: Matrix of GCV values for different p and k combinations.
+#' \item \code{GCV}: Table of GCV values for different p and k combinations.
 #' \item \code{coeffs}: Optimized coefficients.
 #' \item \code{mu_fdobj}: Functional data object for the mean function.
 #' \item \code{mu_basis}: Basis object for the mean function.
@@ -171,7 +171,7 @@ mGSFPCA <- function(data,
     pars = list(
       p = p,
       k = k,
-      GCV_res = opt_result$GCV_res,
+      GCV = as.data.frame(opt_result$GCV_res),
       coeffs = cvec,
       mu_fdobj = comp_data$mu_results$fdobj,
       mu_basis = comp_data$mu_results$basis,
