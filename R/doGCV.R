@@ -41,29 +41,35 @@ run_optimization <- function(p_val, k_val, ini, SiCell, newData, est_pts, basis_
   )
 
   # Compute GCV
+  n = length(SiCell)
   ncoefs <- p_val * k_val + p_val + 1
   nobs <- nrow(newData)
   maxPars <- p_val * length(est_pts) + p_val + 1
-  gcv_val <- opt_result$value / ((1 - (ncoefs / maxPars))^2)
+  gcv_val <- (opt_result$value) / ((1 - (ncoefs / maxPars))^2)
+  aic <- opt_result$par[ncoefs] + p_val*((n+length(est_pts))/(n*length(est_pts))) + log((n*length(est_pts))/(n+length(est_pts)))
 
   return(list(
     cvec = opt_result$par,
     gcv = gcv_val,
     basis = basis,
-    convergence = opt_result$convergence
+    convergence = opt_result$convergence,
+    LLK = opt_result$value,
+    aic = aic
   ))
 }
 
-extract_results <- function(results, indices, GCVkp, cvecCell, basisCell, convergenceCell) {
+extract_results <- function(results, indices, GCVkp, cvecCell, basisCell, convergenceCell, LLKCell, aicCell) {
   for (i in indices) {
     if (!is.null(results[[i]])) {
       cvecCell[[i]] <- results[[i]]$cvec
       GCVkp[i] <- results[[i]]$gcv
       basisCell[[i]] <- results[[i]]$basis
       convergenceCell[i] <- results[[i]]$convergence
+      LLKCell[i] <- results[[i]]$LLK
+      aicCell[i] <- results[[i]]$aic
     }
   }
-  return(list(GCVkp = GCVkp, cvecCell = cvecCell, basisCell = basisCell, convergenceCell = convergenceCell))
+  return(list(GCVkp = GCVkp, cvecCell = cvecCell, basisCell = basisCell, convergenceCell = convergenceCell, LLKCell = LLKCell, aicCell = aicCell))
 }
 
 
@@ -98,6 +104,8 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
     cvecCell <- vector("list", length(p))
     basisCell <- vector("list", length(p))
     convergenceCell <- numeric(length(p))
+    LLKCell <- numeric(length(p))
+    aicCell <- numeric(length(p))
 
     if (length(p) > 1) {
       cat("Selecting k & p\n")
@@ -120,11 +128,13 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
     }
 
     # Extract results
-    extracted <- extract_results(results, 1:length(p), GCVkp, cvecCell, basisCell, convergenceCell)
+    extracted <- extract_results(results, 1:length(p), GCVkp, cvecCell, basisCell, convergenceCell, LLKCell, aicCell)
     GCVkp <- extracted$GCVkp
     cvecCell <- extracted$cvecCell
     basisCell <- extracted$basisCell
     convergenceCell <- extracted$convergenceCell
+    LLKCell <- extracted$LLKCell
+    aicCell <- extracted$aicCell
 
   } else {
     # Stepwise optimization: first optimize k with pmax, then p with optimal k
@@ -134,11 +144,13 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       cvecCell <- vector("list", length(k))
       basisCell <- vector("list", length(k))
       convergenceCell <- numeric(length(k))
+      LLKCell <- numeric(length(k))
+      aicCell <- numeric(length(k))
 
       cat("Selecting k with p =", pmax, "\n")
 
       for (i in 1:length(k)) {
-        if (k[i] < pmax) next  # Skip if k < pmax
+        if (k[i] < pmax) next  # Skip if k < pmax (this line should never run)
         results[[i]] <- run_optimization(
           p_val = pmax,
           k_val = k[i],
@@ -153,18 +165,20 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       }
 
       # Extract results for step 1
-      extracted <- extract_results(results, 1:length(k), GCVk, cvecCell, basisCell, convergenceCell)
+      extracted <- extract_results(results, 1:length(k), GCVk, cvecCell, basisCell, convergenceCell, LLKCell, aicCell)
       GCVk <- extracted$GCVkp
       cvecCell <- extracted$cvecCell
       basisCell <- extracted$basisCell
       convergenceCell <- extracted$convergenceCell
+      LLKCell <- extracted$LLKCell
+      aicCell <- extracted$aicCell
 
       # Find optimal k
       valid_GCV <- GCVk >= 0 & !is.na(GCVk)
       if (all(is.na(GCVk))) stop("No valid GCV values found for k with p =", pmax)
       minGCV <- which.min(GCVk[valid_GCV])
       best_k <- k[valid_GCV][minGCV]
-      GCVk_res <- cbind(p = pmax, k = k[k >= pmax], GCV = GCVk, converge = convergenceCell)
+      GCVk_res <- cbind(p = pmax, k = k[k >= pmax], GCV = GCVk, converge = convergenceCell, LLK = LLKCell, AIC_p = aicCell)
     } else {
       GCVk <- c()
       GCVk_res <- c()
@@ -178,11 +192,13 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       cvecCell_p <- vector("list", length(p))
       basisCell_p <- vector("list", length(p))
       convergenceCell_p <- numeric(length(p))
+      LLKCell_p <- numeric(length(p))
+      aicCell_p <- numeric(length(p))
 
       cat("Selecting p with k =", best_k, "\n")
 
       for (i in 1:length(p)) {
-        if (p[i] > best_k) next  # Skip if p > best_k
+        if (p[i] > best_k) next  # Skip if p > best_k (this line should never run)
         results[[i]] <- run_optimization(
           p_val = p[i],
           k_val = best_k,
@@ -197,18 +213,20 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
       }
 
       # Extract results for step 2
-      extracted <- extract_results(results, 1:length(p), GCVp, cvecCell_p, basisCell_p, convergenceCell_p)
+      extracted <- extract_results(results, 1:length(p), GCVp, cvecCell_p, basisCell_p, convergenceCell_p, LLKCell_p, aicCell_p)
       GCVp <- extracted$GCVkp
       cvecCell_p <- extracted$cvecCell
       basisCell_p <- extracted$basisCell
       convergenceCell_p <- extracted$convergenceCell
+      LLKCell_p <- extracted$LLKCell
+      aicCell_p <- extracted$aicCell
 
       # Find optimal p
       valid_GCV <- GCVp >= 0 & !is.na(GCVp)
       if (all(is.na(GCVp))) stop("No valid GCV values found for p with k =", best_k)
       minGCV <- which.min(GCVp[valid_GCV])
       best_p <- p[valid_GCV][minGCV]
-      GCVp_res <- cbind(p = p[p <= best_k], k = best_k, GCV = GCVp, converge = convergenceCell_p)
+      GCVp_res <- cbind(p = p[p <= best_k], k = best_k, GCV = GCVp, converge = convergenceCell_p, LLK = LLKCell_p, AIC_p = aicCell_p)
     } else {
       GCVp <- c()
       GCVp_res <- c()
@@ -220,11 +238,13 @@ doGCV <- function(p, k, binData, gcvData, basis_type, ini, bin_size, optim_contr
     cvecCell <- c(cvecCell, cvecCell_p)
     basisCell <- c(basisCell, basisCell_p)
     convergenceCell <- c(convergenceCell, convergenceCell_p)
+    LLKCell <- c(LLKCell, LLKCell_p)
+    aicCell <- c(aicCell, aicCell_p)
   }
 
   # Compute GCV results
   GCV_res <- if (all_kp) {
-    cbind(p = p, k = k, GCV = GCVkp, convergence = convergenceCell)
+    cbind(p = p, k = k, GCV = GCVkp, convergence = convergenceCell, LLK = LLKCell, AIC_p = aicCell)
   } else {
     rbind(GCVk_res, GCVp_res)
   }
