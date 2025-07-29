@@ -1,6 +1,6 @@
 # mGSFPCA
 
-Estimate Functional Principal Components from Sparse Data
+Estimate Functional Principal Components from Sparse Functional Data
 
 ## Installation 
 
