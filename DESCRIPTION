@@ -1,0 +1,24 @@
+Package: mGSFPCA
+Title: Estimate Functional Principal Components from Sparse Data
+Version: 0.2.1
+Authors@R: 
+    person("Uche", "Mbaka", , "uche.mbaka@ucd.ie", role = c("aut", "cre"),
+           comment = c(ORCID = 0000-0002-1427-6388))
+Description: Functional principal component analysis with MLE and modified Gram-Schmidt Orthornormalization.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 2.10)
+LazyData: true
+Imports:
+    fda,
+  pracma,
+    Rcpp,
+    Metrics,
+    RcppEigen
+LinkingTo: 
+    Rcpp,
+    RcppEigen
+
