@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // LSQf
-double LSQf(const Eigen::VectorXd& cvec, const List& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid);
-RcppExport SEXP _mGSFPCA_LSQf(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP) {
+double LSQf(const Eigen::VectorXd& cvec, const List& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid, const Eigen::VectorXd& weights);
+RcppExport SEXP _mGSFPCA_LSQf(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
@@ -23,45 +23,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
-    rcpp_result_gen = Rcpp::wrap(LSQf(cvec, SiCell, data, p, k, B, estGrid));
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(LSQf(cvec, SiCell, data, p, k, B, estGrid, weights));
     return rcpp_result_gen;
 END_RCPP
 }
 // LSQg
-Eigen::VectorXd LSQg(const Eigen::VectorXd& cvec, const List& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid);
-RcppExport SEXP _mGSFPCA_LSQg(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
-    Rcpp::traits::input_parameter< const List& >::type SiCell(SiCellSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
-    rcpp_result_gen = Rcpp::wrap(LSQg(cvec, SiCell, data, p, k, B, estGrid));
-    return rcpp_result_gen;
-END_RCPP
-}
-// NLLKf
-double NLLKf(const Eigen::VectorXd& cvec, const List& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid);
-RcppExport SEXP _mGSFPCA_NLLKf(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
-    Rcpp::traits::input_parameter< const List& >::type SiCell(SiCellSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
-    rcpp_result_gen = Rcpp::wrap(NLLKf(cvec, SiCell, data, p, k, B, estGrid));
-    return rcpp_result_gen;
-END_RCPP
-}
-// NLLKg
-Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec, const std::vector<Eigen::MatrixXd>& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid);
-RcppExport SEXP _mGSFPCA_NLLKg(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP) {
+Eigen::VectorXd LSQg(const Eigen::VectorXd& cvec, const std::vector<Eigen::MatrixXd>& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid, const Eigen::VectorXd& weights);
+RcppExport SEXP _mGSFPCA_LSQg(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
@@ -71,7 +40,42 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
-    rcpp_result_gen = Rcpp::wrap(NLLKg(cvec, SiCell, data, p, k, B, estGrid));
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(LSQg(cvec, SiCell, data, p, k, B, estGrid, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
+// NLLKf
+double NLLKf(const Eigen::VectorXd& cvec, const List& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid, const Eigen::VectorXd& weights);
+RcppExport SEXP _mGSFPCA_NLLKf(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
+    Rcpp::traits::input_parameter< const List& >::type SiCell(SiCellSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(NLLKf(cvec, SiCell, data, p, k, B, estGrid, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
+// NLLKg
+Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec, const std::vector<Eigen::MatrixXd>& SiCell, const Eigen::MatrixXd& data, int p, int k, const Eigen::MatrixXd& B, const Eigen::VectorXd& estGrid, const Eigen::VectorXd& weights);
+RcppExport SEXP _mGSFPCA_NLLKg(SEXP cvecSEXP, SEXP SiCellSEXP, SEXP dataSEXP, SEXP pSEXP, SEXP kSEXP, SEXP BSEXP, SEXP estGridSEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type cvec(cvecSEXP);
+    Rcpp::traits::input_parameter< const std::vector<Eigen::MatrixXd>& >::type SiCell(SiCellSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type B(BSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type estGrid(estGridSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(NLLKg(cvec, SiCell, data, p, k, B, estGrid, weights));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -97,14 +101,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mwGS
+Eigen::MatrixXd mwGS(const Eigen::MatrixXd& U, const Eigen::VectorXd& weights);
+RcppExport SEXP _mGSFPCA_mwGS(SEXP USEXP, SEXP weightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type U(USEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type weights(weightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(mwGS(U, weights));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_mGSFPCA_LSQf", (DL_FUNC) &_mGSFPCA_LSQf, 7},
-    {"_mGSFPCA_LSQg", (DL_FUNC) &_mGSFPCA_LSQg, 7},
-    {"_mGSFPCA_NLLKf", (DL_FUNC) &_mGSFPCA_NLLKf, 7},
-    {"_mGSFPCA_NLLKg", (DL_FUNC) &_mGSFPCA_NLLKg, 7},
+    {"_mGSFPCA_LSQf", (DL_FUNC) &_mGSFPCA_LSQf, 8},
+    {"_mGSFPCA_LSQg", (DL_FUNC) &_mGSFPCA_LSQg, 8},
+    {"_mGSFPCA_NLLKf", (DL_FUNC) &_mGSFPCA_NLLKf, 8},
+    {"_mGSFPCA_NLLKg", (DL_FUNC) &_mGSFPCA_NLLKg, 8},
     {"_mGSFPCA_get_SiCell", (DL_FUNC) &_mGSFPCA_get_SiCell, 1},
     {"_mGSFPCA_topdm_cpp", (DL_FUNC) &_mGSFPCA_topdm_cpp, 1},
+    {"_mGSFPCA_mwGS", (DL_FUNC) &_mGSFPCA_mwGS, 2},
     {NULL, NULL, 0}
 };
 

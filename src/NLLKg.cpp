@@ -12,7 +12,7 @@ Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec,
                       int p, int k,
                       const Eigen::MatrixXd& B,
                       const Eigen::VectorXd& estGrid,
-                      const VectorXd& weights) {
+                      const Eigen::VectorXd& weights) {
   int ncoefs = cvec.size();
 
   // --- extract unique IDs ---
