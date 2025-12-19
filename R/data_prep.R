@@ -18,7 +18,7 @@ data_prep <- function(data, k, p, obs_range, aT, bT, bin_size, nRegGrid, basis_t
   #   bin_size <- length(new_obs_pts)
   #   estGrid <- new_obs_pts
   # } else {
-    estGrid <- seq(0, 1, length.out = bin_size)
+  estGrid <- seq(0, 1, length.out = bin_size)
   # }
 
   if (bin_size <= 51) {
@@ -37,7 +37,9 @@ data_prep <- function(data, k, p, obs_range, aT, bT, bin_size, nRegGrid, basis_t
   kp1 <- length(k) == 1 & length(p) == 1
   if (kp1 && !is.null(init_coeff)){
     ini <- init_coeff
-  }else{
+  } else if(identical(tolower("LSQ"), tolower(init_coeff))) {
+    ini <- init_coeff
+  } else{
     ini <- NULL
   }
 
