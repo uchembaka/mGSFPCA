@@ -27,16 +27,20 @@ NULL
 #' the optimization algorithm (Based on optim()). Default is 0 (no tracing).
 #' @param nRegGrid Integer specifying the number of points in the regular grid
 #' for evaluation. Default is 51.
-#' @param init_coeff Numeric vector of initial coefficients for optimization.
+#' @param init_coeff Numeric vector of initial coefficients, or "LSQ".
+#' If "LSQ", initialization is based on a least-squares estimate of the
+#' covariance structure.
 #' If NULL (default), coefficients are initialized randomly.
 #' @param obs_range Numeric vector of length 2 specifying the observation range
 #' (aT, bT). If NULL (default), it is set to c(0,1).
 #' @param mu_nbasis Integer specifying the number of basis functions for the
 #' mean function. Default is 15.
 #' @param bin_size Integer specifying the number of bins for data binning.
-#' Default is 51.
+#' Default is 101.
 #' @param use_kp_grid Logical indicating whether to evaluate all combinations of
 #'  p and k (TRUE, default) or use a stepwise model selection approach (FALSE).
+#' @param alpha Numeric value in [0, 1] controlling density-based weighting
+#' of the binned observations. Default is 0.
 #' @param skip_check Logical indicating whether to skip input validation checks.
 #'  Default is FALSE.
 #'
@@ -44,6 +48,7 @@ NULL
 #' \itemize{
 #' \item \code{Phi}: Matrix of estimated eigenfunctions.
 #' \item \code{Lambda}: Vector of estimated eigenvalues.
+#' \item \code{eigenfunctions}: List of eigenfunctions on [0, 1] as fd object.
 #' \item \code{mu}: Vector of the estimated mean function evaluated on the grid.
 #' \item \code{sig2}: Estimated variance of the error term.
 #' \item \code{pars}: A list containing model parameters and results:
@@ -60,7 +65,7 @@ NULL
 #' \item \code{binData}: Binned data used for estimation.
 #' \item \code{range}: Observation range.
 #' \item \code{convergence}: Convergence status of the optimization
-#' (Based on optim()).
+#' (Based on optim()). 0 indicates successful completion.
 #' }
 #' }
 #'
@@ -125,14 +130,15 @@ mGSFPCA <- function(data,
                     init_coeff = NULL,
                     obs_range = NULL,
                     mu_nbasis = 15,
-                    bin_size = 51,
+                    bin_size = 101,
                     use_kp_grid = TRUE,
-                    skip_check = FALSE){
+                    alpha = 0,
+                    skip_check = TRUE){
 
   inputs <- input_check(data, p, k, basis_type, optim_trace,
                         maxit, optim_tol, bin_size, nRegGrid,
                         init_coeff, obs_range, mu_nbasis,
-                        use_kp_grid, skip_check)
+                        use_kp_grid, alpha, skip_check)
 
   comp_data <- data_prep(data = inputs$data, k = inputs$k, p = inputs$p,
                          obs_range = inputs$obs_range, aT = inputs$aT,
@@ -141,14 +147,15 @@ mGSFPCA <- function(data,
                          basis_type = inputs$basis_type, inputs$init_coeff,
                          inputs$mu_nbasis)
 
-  opt_result <- doGCV(p = inputs$p, k = inputs$k,
-                      binData = comp_data$binData,
-                      gcvData = comp_data$gcvData,
-                      basis_type = inputs$basis_type,
-                      ini = comp_data$ini,
-                      bin_size = comp_data$bin_size,
-                      optim_control = inputs$optim_control,
-                      all_kp = inputs$use_kp_grid)
+  opt_result <- fit_model(p = inputs$p, k = inputs$k,
+                          binData = comp_data$binData,
+                          gcvData = comp_data$gcvData,
+                          basis_type = inputs$basis_type,
+                          ini = comp_data$ini,
+                          bin_size = comp_data$bin_size,
+                          optim_control = inputs$optim_control,
+                          all_kp = inputs$use_kp_grid,
+                          alpha = inputs$alpha)
 
 
   # Extract parameters
@@ -160,7 +167,7 @@ mGSFPCA <- function(data,
 
   # Get functional components
   UD_result <- get_UDUT(cvec, basis, inputs$evalGrid, p, k)
-  Phi <- UD_result$U*sqrt(length(inputs$evalGrid))
+  Phi <- UD_result$U
   Lambda <- UD_result$D/comp_data$bin_size
   mu <- fda::eval.basis(inputs$evalGrid, comp_data$mu_results$basis) %*%
     comp_data$mu_results$fdobj$fd$coefs
@@ -169,6 +176,7 @@ mGSFPCA <- function(data,
   list(
     Phi = Phi,
     Lambda = diag(Lambda),
+    eigenfunctions = eigenFunctions_fd(Phi, basis),
     mu = mu,
     sig2 = sig2,
     pars = list(
