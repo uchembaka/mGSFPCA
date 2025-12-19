@@ -130,7 +130,7 @@ input_check <- function(data, p, k, basis_type, optim_trace,
     }
   }
 
-  if (alpha < 0 || alpha > 1) stop("Invalid alpha value")
+  if (alpha < 0 || alpha > 0.5) stop("Invalid alpha value")
   # Check logicals
   if (!is.logical(skip_check)) {
     warning("skip_check not logical. Set to TRUE")
