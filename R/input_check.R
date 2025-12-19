@@ -1,6 +1,7 @@
 input_check <- function(data, p, k, basis_type, optim_trace,
                         maxit, optim_tol, bin_size, nRegGrid,
-                        init_coeff, obs_range, mu_nbasis, use_kp_grid, skip_check) {
+                        init_coeff, obs_range, mu_nbasis,
+                        use_kp_grid, alpha, skip_check) {
 
   if (skip_check) {
     # Skip all checks and define new terms
@@ -18,6 +19,12 @@ input_check <- function(data, p, k, basis_type, optim_trace,
       optim_trace = optim_trace,
       maxit = maxit,
       optim_tol = optim_tol,
+      optim_control = list(
+        trace = optim_trace,
+        maxit = maxit,
+        fnscale = 1,
+        reltol = optim_tol
+      ),
       bin_size = bin_size,
       nRegGrid = nRegGrid,
       init_coeff = init_coeff,
@@ -26,7 +33,8 @@ input_check <- function(data, p, k, basis_type, optim_trace,
       evalGrid = evalGrid,
       aT = aT,
       bT = bT,
-      use_kp_grid = use_kp_grid
+      use_kp_grid = use_kp_grid,
+      alpha = alpha
     ))
   }
 
@@ -102,21 +110,27 @@ input_check <- function(data, p, k, basis_type, optim_trace,
 
   # Check init_coeff is numeric
   if (!is.null(init_coeff) && !is.numeric(init_coeff)) {
-    stop("init_coeff must be numeric")
+    if(!identical(tolower("LSQ"), tolower(init_coeff))) {
+      stop("init_coeff must be numeric or \"LSQ\"")
+    }
+
   }
 
   # Parameter validation for p, k, and init_coeff
   if (length(p) > 1 || length(k) > 1) {
-    if (!is.null(init_coeff)) {
+    if (!is.null(init_coeff) && !identical(tolower("LSQ"), tolower(init_coeff))) {
       warning("Either p or k is not a single integer, init_coeff will be ignored.")
       init_coeff <- NULL
     }
   } else if (!is.null(init_coeff)) {
-    if (k*p + p + 1 != length(init_coeff)) {
-      stop("length of init_coeff not equal to k*p + p + 1")
+    if (!identical(tolower("LSQ"), tolower(init_coeff))) {
+      if (k*p + p + 1 != length(init_coeff)) {
+        stop("length of init_coeff not equal to k*p + p + 1")
+      }
     }
   }
 
+  if (alpha < 0 || alpha > 1) stop("Invalid alpha value")
   # Check logicals
   if (!is.logical(skip_check)) {
     warning("skip_check not logical. Set to TRUE")
@@ -189,6 +203,7 @@ input_check <- function(data, p, k, basis_type, optim_trace,
     evalGrid = evalGrid,
     aT = aT,
     bT = bT,
-    use_kp_grid = use_kp_grid
+    use_kp_grid = use_kp_grid,
+    alpha = alpha
   ))
 }
