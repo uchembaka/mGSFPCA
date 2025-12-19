@@ -11,7 +11,8 @@ double LSQf(const Eigen::VectorXd& cvec,
             const Eigen::MatrixXd& data,
             int p, int k,
             const Eigen::MatrixXd& B,
-            const Eigen::VectorXd& estGrid) {
+            const Eigen::VectorXd& estGrid,
+            const VectorXd& weights) {
 
   int ncoefs = cvec.size();
 
@@ -45,7 +46,7 @@ double LSQf(const Eigen::VectorXd& cvec,
   Eigen::MatrixXd D = D_vec.asDiagonal();
   double sig2 = std::exp(Csig2);
 
-  List gs_result = gram_schmidt_with_deriv(U);
+  List gs_result = gram_schmidt_with_deriv(U, weights);
   Eigen::MatrixXd W = as<MatrixXd>(gs_result["W"]);
   Eigen::MatrixXd Shat = W * D * W.transpose() + sig2 * MatrixXd::Identity(M, M);
 

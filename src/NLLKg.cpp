@@ -11,7 +11,8 @@ Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec,
                       const Eigen::MatrixXd& data,
                       int p, int k,
                       const Eigen::MatrixXd& B,
-                      const Eigen::VectorXd& estGrid) {
+                      const Eigen::VectorXd& estGrid,
+                      const VectorXd& weights) {
   int ncoefs = cvec.size();
 
   // --- extract unique IDs ---
@@ -45,7 +46,7 @@ Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec,
   Eigen::MatrixXd U = B * C;
 
   // --- orthogonalize ---
-  List          gs     = gram_schmidt_with_deriv(U);
+  List          gs     = gram_schmidt_with_deriv(U, weights);
   Eigen::MatrixXd W    = gs["W"];
   std::vector<MatrixXd> DWDU = gs["DW"];  // length = p*p (per original idx = q*p + j)
 
@@ -63,7 +64,7 @@ Eigen::VectorXd NLLKg(const Eigen::VectorXd& cvec,
     int l = a % k;       // row in C
     MatrixXd dHdcl = MatrixXd::Zero(M, p);
     for (int q = j; q < p; ++q) {
-      int idx = q * p + j;
+      int idx = j * p + q;
       dHdcl.col(q) = DWDU[idx] * B.col(l);
     }
     dShat_all[a] = dHdcl * DHT + HD * dHdcl.transpose();
