@@ -8,7 +8,7 @@
 #' model parameters.
 #' @param eval_pts Numeric vector specifying the time points at which to
 #' evaluate the principal component functions. The time points should either be
-#' in the original data range or in [0, 1], in which case the output is
+#' in the original data range or \eqn{\in [0, 1]}, in which case the output is
 #' equivalent to calling fda::eval.fd on mGSFPCA_obj$eigenfunction.
 #' @param matrix_orth Logical indicating whether to enforce strict orthogonality
 #' of the evaluated eigenfunctions \eqn{\Phi^\top \Phi = I_p} under standard

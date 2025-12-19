@@ -26,7 +26,7 @@ NULL
 #' @param optim_trace Integer specifying the level of tracing information from
 #' the optimization algorithm (Based on optim()). Default is 0 (no tracing).
 #' @param nRegGrid Integer specifying the number of points in the regular grid
-#' for evaluation. Default is 51.
+#' for evaluation. Default is 101.
 #' @param init_coeff Numeric vector of initial coefficients, or "LSQ".
 #' If "LSQ", initialization is based on a least-squares estimate of the
 #' covariance structure.
@@ -39,7 +39,7 @@ NULL
 #' Default is 101.
 #' @param use_kp_grid Logical indicating whether to evaluate all combinations of
 #'  p and k (TRUE, default) or use a stepwise model selection approach (FALSE).
-#' @param alpha Numeric value in [0, 1] controlling density-based weighting
+#' @param alpha Numeric value \eqn{\in [0, 1]} controlling density-based weighting
 #' of the binned observations. Default is 0.
 #' @param skip_check Logical indicating whether to skip input validation checks.
 #'  Default is FALSE.
@@ -48,7 +48,7 @@ NULL
 #' \itemize{
 #' \item \code{Phi}: Matrix of estimated eigenfunctions.
 #' \item \code{Lambda}: Vector of estimated eigenvalues.
-#' \item \code{eigenfunctions}: List of eigenfunctions on [0, 1] as fd object.
+#' \item \code{eigenfunctions}: List of eigenfunctions on \eqn{[0, 1]} as fd object.
 #' \item \code{mu}: Vector of the estimated mean function evaluated on the grid.
 #' \item \code{sig2}: Estimated variance of the error term.
 #' \item \code{pars}: A list containing model parameters and results:

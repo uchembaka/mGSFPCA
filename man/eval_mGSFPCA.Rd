@@ -4,7 +4,7 @@
 \alias{eval_mGSFPCA}
 \title{Evaluate Principal Component Functions from mGSFPCA}
 \usage{
-eval_mGSFPCA(mGSFPCA_obj, eval_pts = NULL)
+eval_mGSFPCA(mGSFPCA_obj, eval_pts = NULL, matrix_orth = FALSE)
 }
 \arguments{
 \item{mGSFPCA_obj}{A list object returned by the \code{mGSFPCA} function,
@@ -12,7 +12,14 @@ containing the estimated principal components, basis functions, and other
 model parameters.}
 
 \item{eval_pts}{Numeric vector specifying the time points at which to
-evaluate the principal component functions.}
+evaluate the principal component functions. The time points should either be
+in the original data range or \eqn{\in [0, 1]}, in which case the output is
+equivalent to calling fda::eval.fd on mGSFPCA_obj$eigenfunction.}
+
+\item{matrix_orth}{Logical indicating whether to enforce strict orthogonality
+of the evaluated eigenfunctions \eqn{\Phi^\top \Phi = I_p} under standard
+matrix multiplication (discrete inner product). Diagnostic comparison plots
+are displayed. Requires \code{length(eval_pts) > p}.}
 }
 \value{
 A matrix of dimension \code{length(eval_pts) x p}, where \code{p} is
