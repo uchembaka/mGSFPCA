@@ -19,7 +19,7 @@ mGSFPCA(
   bin_size = 101,
   use_kp_grid = TRUE,
   alpha = 0,
-  skip_check = TRUE
+  skip_check = FALSE
 )
 }
 \arguments{
@@ -64,7 +64,7 @@ Default is 101.}
 \item{use_kp_grid}{Logical indicating whether to evaluate all combinations of
 p and k (TRUE, default) or use a stepwise model selection approach (FALSE).}
 
-\item{alpha}{Numeric value \eqn{\in [0, 1]} controlling density-based weighting
+\item{alpha}{Numeric value \eqn{\in [0, 0.5]} controlling density-based weighting
 of the binned observations. Default is 0.}
 
 \item{skip_check}{Logical indicating whether to skip input validation checks.

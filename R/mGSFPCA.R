@@ -169,6 +169,13 @@ mGSFPCA <- function(data,
   UD_result <- get_UDUT(cvec, basis, inputs$evalGrid, p, k)
   Phi <- UD_result$U
   Lambda <- UD_result$D/comp_data$bin_size
+
+  # C-tilde
+  int_BBT <- fda::inprod(basis, basis)
+  Gram_mat <- solve(chol(int_BBT))
+  orthB <- fda::eval.basis(inputs$evalGrid, basis) %*% Gram_mat
+  C_tilde <- int_Bt_phi(orthB, Phi, inputs$evalGrid)
+
   mu <- fda::eval.basis(inputs$evalGrid, comp_data$mu_results$basis) %*%
     comp_data$mu_results$fdobj$fd$coefs
 
@@ -182,8 +189,10 @@ mGSFPCA <- function(data,
     pars = list(
       p = p,
       k = k,
-      AIC = as.data.frame(opt_result$GCV_res[,1:5]),
+      AIC = as.data.frame(opt_result$AIC_res[,1:5]),
       coeffs = cvec,
+      c_tilde = C_tilde,
+      orthB = orthB,
       mu_fdobj = comp_data$mu_results$fdobj,
       mu_basis = comp_data$mu_results$basis,
       workGrid = comp_data$binData$est_pts,

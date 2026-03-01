@@ -1,6 +1,6 @@
 Package: mGSFPCA
 Title: Estimate Functional Principal Components from Sparse Data
-Version: 0.2.1
+Version: 1.0.0
 Authors@R: 
     person("Uche", "Mbaka", , "uche.mbaka@ucd.ie", role = c("aut", "cre"),
            comment = c(ORCID = 0000-0002-1427-6388))
