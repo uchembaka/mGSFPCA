@@ -57,6 +57,8 @@ NULL
 #' \item \code{k}: Optimal number of basis functions.
 #' \item \code{AIC}: Table of AIC values for different p and k combinations.
 #' \item \code{coeffs}: Optimized coefficients.
+#' \item \code{c_tilde}: Orthonormal coefficients.
+#' \item \code{orthB}: Orthonormal basis functions evaluated over nRegGrid.
 #' \item \code{mu_fdobj}: Functional data object for the mean function.
 #' \item \code{mu_basis}: Basis object for the mean function.
 #' \item \code{workGrid}: Grid points used for estimation.
