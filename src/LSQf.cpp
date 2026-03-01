@@ -72,7 +72,8 @@ double LSQf(const Eigen::VectorXd& cvec,
     Eigen::MatrixXd Sihat = Shat(ti, ti);
     Eigen::MatrixXd Si = as<MatrixXd>(SiCell[i]);
     Eigen::MatrixXd Res = Si - Sihat;
-    double fi = Res.squaredNorm() / mi;
+    double di = mi * (mi + 1.0) / 2.0;
+    double fi = Res.squaredNorm() / di;
     f += fi;
   }
   f /= n;

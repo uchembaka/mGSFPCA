@@ -125,9 +125,9 @@ Eigen::VectorXd LSQg(const Eigen::VectorXd& cvec,
 
     for (int a = 0; a < ncoefs; ++a) {
       MatrixXd dS_i = dShat_all[a](ti, ti);
-
+      double di = mi * (mi + 1.0) / 2.0;
       // LSQ gradient:
-      g(a) += -2.0 * (Res.cwiseProduct(dS_i)).sum() / double(mi);
+      g(a) += 2.0 * (Res.cwiseProduct(dS_i)).sum() / di;
     }
   }
 
