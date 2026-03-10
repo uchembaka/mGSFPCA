@@ -137,4 +137,41 @@ inline List gram_schmidt_with_deriv(const MatrixXd& U) {
   return gram_schmidt_with_deriv(U, weights);
 }
 
+
+
+inline List woodbury_cov(const Eigen::MatrixXd& Phi,
+                            const Eigen::VectorXd& lam,
+                            const double           sig2)
+{
+  // ---------- dimension checks ----------
+  const int m = static_cast<int>(Phi.rows());
+  const int p = static_cast<int>(Phi.cols());
+
+  if (lam.size() != p)
+    throw std::invalid_argument("lam must have length == Phi.cols()");
+  if (sig2 <= 0.0)
+    throw std::invalid_argument("sig2 must be positive");
+
+  double log_det = static_cast<double>(m - p) * std::log(sig2);
+  for (int k = 0; k < p; ++k) {
+    if (lam(k) <= 0.0)
+      throw std::invalid_argument("all eigenvalues must be positive");
+    log_det += std::log(sig2 + lam(k));
+  }
+
+  Eigen::VectorXd d(p);
+  for (int k = 0; k < p; ++k)
+    d(k) = lam(k) / (sig2 * (sig2 + lam(k)));
+
+  Eigen::MatrixXd Phi_scaled = Phi * d.asDiagonal();   // m x p
+
+  Eigen::MatrixXd Sigma_inv =
+    (1.0 / sig2) * Eigen::MatrixXd::Identity(m, m)
+    - Phi_scaled * Phi.transpose();
+
+  return List::create(
+    _["Sigma_inv"]  = Sigma_inv,
+    _["log_det"] = log_det
+  );
+}
 #endif
