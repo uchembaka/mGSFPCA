@@ -85,11 +85,12 @@ run_optimization <- function(p_val, k_val, ini, SiCell, newData, est_pts,
       estGrid = est_pts,
       weights = wghts,
       method = "BFGS",
-      control = optim_control
+      control = optim_control,
+      hessian = T
     )
 
     # Compute AIC
-    aic_value <- n * optim_result$value + (k_val * p_val * p_val) + 1
+    aic_value <- n * optim_result$value + (k_val * p_val * p_val) + p_val + 1
 
     list(
       par = optim_result$par,
