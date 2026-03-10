@@ -170,7 +170,7 @@ mGSFPCA <- function(data,
   # Get functional components
   UD_result <- get_UDUT(cvec, basis, inputs$evalGrid, p, k)
   Phi <- UD_result$U
-  Lambda <- UD_result$D/comp_data$bin_size
+  Lambda <- UD_result$D
 
   # C-tilde
   int_BBT <- fda::inprod(basis, basis)
