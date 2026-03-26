@@ -99,15 +99,17 @@ component analysis on sparse functional data by applying \code{mGSFPCA} to
 each variable in \code{dataCell}.
 }
 \examples{
-sp_mult_sim
-tmp <- spMultFPCA(sp_mult_sim$obs_data,
-                  r = rep(list(3:5), 3),
-                  G = rep(list(5:10), 3),
-                  nRegGrid = 100)
-Metrics::rmse(tmp$Cov, sp_mult_sim$True_Cov)
-grid <- seq(0, 1, length = 300)
-plot(grid, sp_mult_sim$True_Eigs$funcs[,1], type ='l', ylab = 'phi')
-lines(grid, -tmp$fullEigFun[,1], col = 2)
+\donttest{
+  sp_mult_sim
+  tmp <- spMultFPCA(sp_mult_sim$obs_data,
+                    r = rep(list(3:5), 3),
+                    G = rep(list(5:10), 3),
+                    nRegGrid = 100)
+  Metrics::rmse(tmp$Cov, sp_mult_sim$True_Cov)
+  grid <- seq(0, 1, length = 300)
+  plot(grid, sp_mult_sim$True_Eigs$funcs[,1], type ='l', ylab = 'phi')
+  lines(grid, -tmp$fullEigFun[,1], col = 2)
+}
 
 }
 \references{

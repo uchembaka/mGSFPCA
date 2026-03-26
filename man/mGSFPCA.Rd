@@ -107,35 +107,37 @@ The mGSFPCA function implements functional principal component analysis using
 MLE with modified Gram-Schmidt orthornormalization.
 }
 \examples{
-# Plot 3 random subjects
-set.seed(111)
-samp <- sample.int(100, 3)
-# bspline_sim is automatically loaded
-Y <- bspline_sim$Y; X <- bspline_sim$X
-id <- unique(Y[,1])
-grid <- seq(0, 1, length = 51)
+\donttest{
+  # Plot 3 random subjects
+  set.seed(111)
+  samp <- sample.int(100, 3)
+  # bspline_sim is automatically loaded
+  Y <- bspline_sim$Y; X <- bspline_sim$X
+  id <- unique(Y[,1])
+  grid <- seq(0, 1, length = 51)
 
-plot(Y[,2], Y[,3], type = 'n', ylab = 'Y(t)', xlab = 't')
-for (i in 1:3) {
-  points(Y[id == samp[i], 2], Y[id == samp[i], 3], col = i, pch = 19)
-  lines(grid, X[samp[i], ], col = i, lwd = 2)
+  plot(Y[,2], Y[,3], type = 'n', ylab = 'Y(t)', xlab = 't')
+  for (i in 1:3) {
+    points(Y[id == samp[i], 2], Y[id == samp[i], 3], col = i, pch = 19)
+    lines(grid, X[samp[i], ], col = i, lwd = 2)
+  }
+
+  # Estimate
+  fit <- mGSFPCA(Y, p = 3:5, k = c(5, 10, 15), basis_type = "bspline",
+  nRegGrid = 51, bin_size = 101)
+
+  c(fit$pars$p, fit$pars$k)
+
+  fit$Lambda
+
+  plot(grid, fit$Phi[,1], type ='l', lty = 2)
+  lines(grid, bspline_sim$eigFun[1,], col = 2) # change sign if needed
+  min(Metrics::rmse(fit$Phi[,1], bspline_sim$eigFun[1,]),
+   Metrics::rmse(-fit$Phi[,1], bspline_sim$eigFun[1,]))
+
+  x_pred <- get_xHat(fit)
+  Metrics::rmse(x_pred$xHat, bspline_sim$X)
 }
-
-# Estimate
-fit <- mGSFPCA(Y, p = 3:5, k = c(5, 10, 15), basis_type = "bspline",
-nRegGrid = 51, bin_size = 101)
-
-c(fit$pars$p, fit$pars$k)
-
-fit$Lambda
-
-plot(grid, fit$Phi[,1], type ='l', lty = 2)
-lines(grid, bspline_sim$eigFun[1,], col = 2) # change sign if needed
-min(Metrics::rmse(fit$Phi[,1], bspline_sim$eigFun[1,]),
- Metrics::rmse(-fit$Phi[,1], bspline_sim$eigFun[1,]))
-
-x_pred <- get_xHat(fit)
-Metrics::rmse(x_pred$xHat, bspline_sim$X)
 
 
 }
