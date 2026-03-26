@@ -50,7 +50,7 @@ eval_mGSFPCA <- function(mGSFPCA_obj, eval_pts = NULL, matrix_orth = FALSE) {
 
   if (matrix_orth) {
     if (npts < p) stop("The number of evaluation points (eval_pts) < p while matrix_orth set to TRUE")
-    cat('See plot to compare eigenfunctions evaluation at eval_pts to original grid\n')
+    message('See plot to compare eigenfunctions evaluation at eval_pts to original grid\n')
     Phi <- get_UDUT(cvec, basis, evpts, p, k)$U
     for (i in 1:p) {
       plot(mGSFPCA_obj$pars$evalGrid, mGSFPCA_obj$Phi[,i],

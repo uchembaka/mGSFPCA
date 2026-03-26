@@ -3,7 +3,7 @@ init_coeffs <- function(p, k, ini = NULL) {
 
   ncoefs <- k * p + p + 1
   if (is.null(ini)) {
-    set.seed(1)
+    #set.seed(1)
     ini <- runif(ncoefs, min = -1, max = 1)
     ini[(k*p+1) : (ncoefs-1)] <- log(rev(seq(1, 100, length.out = p)))
     ini[ncoefs] <- log(0.1)
@@ -152,7 +152,7 @@ fit_model <- function(p, k, binData, gcvData, basis_type, ini, bin_size,
 
   if (all_kp) {
     # All combinations of p and k
-    cat(if (length(p) > 1 && length(k) > 1) "Selecting k & p\n"
+    message(if (length(p) > 1 && length(k) > 1) "Selecting k & p\n"
         else if (length(p) > 1) "Selecting p\n"
         else if (length(k) > 1) "Selecting k\n")
 
@@ -194,7 +194,7 @@ fit_model <- function(p, k, binData, gcvData, basis_type, ini, bin_size,
     # Stepwise optimization
     if (length(k) > 1) {
       pmax <- max(p)
-      cat("Selecting k with p =", pmax, "\n")
+      message("Selecting k with p = ", pmax, "\n")
 
       # Step 1: Optimize k with p = pmax
       valid_k <- k[k >= pmax]
@@ -239,7 +239,7 @@ fit_model <- function(p, k, binData, gcvData, basis_type, ini, bin_size,
 
     if (length(p) > 1) {
       # Step 2: Optimize p with fixed k = best_k
-      cat("Selecting p with k =", best_k, "\n")
+      message("Selecting p with k = ", best_k, "\n")
 
       valid_p <- p[p <= best_k]
       n_p <- length(valid_p)
