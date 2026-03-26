@@ -61,15 +61,17 @@
 #' }
 #'
 #' @examples
-#' sp_mult_sim
-#' tmp <- spMultFPCA(sp_mult_sim$obs_data,
-#'                   r = rep(list(3:5), 3),
-#'                   G = rep(list(5:10), 3),
-#'                   nRegGrid = 100)
-#' Metrics::rmse(tmp$Cov, sp_mult_sim$True_Cov)
-#' grid <- seq(0, 1, length = 300)
-#' plot(grid, sp_mult_sim$True_Eigs$funcs[,1], type ='l', ylab = 'phi')
-#' lines(grid, -tmp$fullEigFun[,1], col = 2)
+#' \donttest{
+#'   sp_mult_sim
+#'   tmp <- spMultFPCA(sp_mult_sim$obs_data,
+#'                     r = rep(list(3:5), 3),
+#'                     G = rep(list(5:10), 3),
+#'                     nRegGrid = 100)
+#'   Metrics::rmse(tmp$Cov, sp_mult_sim$True_Cov)
+#'   grid <- seq(0, 1, length = 300)
+#'   plot(grid, sp_mult_sim$True_Eigs$funcs[,1], type ='l', ylab = 'phi')
+#'   lines(grid, -tmp$fullEigFun[,1], col = 2)
+#' }
 #'
 #' @details
 #' The \code{spMultFPCA} function performs multivariate functional principal
@@ -77,6 +79,9 @@
 #' each variable in \code{dataCell}.
 #'
 #' @references
+#' Mbaka, U., & Carey M. (2026). Estimation of Multivariate Functional Principal
+#'  Components from Sparse Functional Data
+#'
 #' Happ, C., & Greven, S. (2018). Multivariate functional principal component
 #' analysis for data observed on different dimensional domains. Journal of the
 #' American Statistical Association, 113(522), 649–659.
